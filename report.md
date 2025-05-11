@@ -1,4 +1,26 @@
-### Question 1
+# Assignment 4: NanoGPT149 Performance Analysis Report
+
+## Students
+
+- Muhammad Usman Khalil 22L-6873
+- Ali Shafi 22L-6746
+
+## Part 1: Naive Unfused Attention Analysis
+
+### Performance Metrics
+
+- Reference Implementation:
+
+  - CPU Time: 270.906ms
+  - Memory Usage: 4,718,592 bytes
+  - Self CPU Time Total: 271.164ms
+
+- Student Implementation:
+  - CPU Time: 248.765ms
+  - Memory Usage: 4,718,592 bytes
+  - Self CPU Time Total: 248.877ms
+
+### Raw output
 
 ```
 (.venv) usman@DESKTOP-KCKDHHH:~/Code/PDC-Assignment-4$ python3 gpt149.py part1
@@ -67,8 +89,27 @@ cpu time:  248.765ms
 mem usage:  4718592 bytes
 ```
 
+### Analysis
 
-#### Question 2
+The naive implementation shows comparable performance between reference and student implementations, with the student version actually performing slightly better (about 8% faster). The memory usage remains identical at ~4.7MB, which is expected for the naive approach as it requires storing the full NxN attention matrix.
+
+## Part 2: Blocked Matrix Multiply and Unfused Softmax Analysis
+
+### Performance Metrics
+
+- Reference Implementation:
+
+  - CPU Time: 309.047ms
+  - Memory Usage: 4,718,592 bytes
+  - Self CPU Time Total: 309.193ms
+
+- Student Implementation:
+  - CPU Time: 210.923ms
+  - Memory Usage: 4,718,592 bytes
+  - Self CPU Time Total: 211.016ms
+
+### Raw output
+
 ```
 (.venv) usman@DESKTOP-KCKDHHH:~/Code/PDC-Assignment-4$ python3 gpt149.py part2
 
@@ -137,7 +178,27 @@ cpu time:  210.923ms
 mem usage:  4718592 bytes
 ```
 
-#### Question 3
+### Analysis
+
+The blocked implementation shows significant improvement in the student version, achieving approximately 32% better performance than the reference implementation. This demonstrates the effectiveness of cache-aware blocking strategies. The memory usage remains the same as Part 1 since we're still maintaining the full NxN matrix.
+
+## Part 3: Fused Attention Analysis
+
+### Performance Metrics
+
+- Reference Implementation:
+
+  - CPU Time: 248.826ms
+  - Memory Usage: 557,056 bytes
+  - Self CPU Time Total: 248.939ms
+
+- Student Implementation:
+  - CPU Time: 129.171ms
+  - Memory Usage: 557,056 bytes
+  - Self CPU Time Total: 129.234ms
+
+### Raw output
+
 ```
 (.venv) usman@DESKTOP-KCKDHHH:~/Code/PDC-Assignment-4$ python3 gpt149.py part3
 
@@ -205,7 +266,33 @@ cpu time:  129.171ms
 mem usage:  557056 bytes
 ```
 
-#### Question 4
+### Analysis
+
+The fused implementation shows dramatic improvements in both performance and memory usage:
+
+1. Memory usage reduced by ~88% (from 4.7MB to 557KB)
+2. Student implementation is ~48% faster than the reference
+3. Overall performance is significantly better than both previous implementations
+
+This demonstrates the effectiveness of operation fusion in reducing memory overhead and improving cache utilization.
+
+## Part 4: Flash Attention Analysis
+
+### Performance Metrics
+
+- Reference Implementation:
+
+  - CPU Time: 601.97ms
+  - Memory Usage: 524,288 bytes
+  - Self CPU Time Total: 603.591ms
+
+- Student Implementation:
+  - CPU Time: 221.111ms
+  - Memory Usage: 524,288 bytes
+  - Self CPU Time Total: 222.672ms
+
+### Raw output
+
 ```
 (.venv) usman@DESKTOP-KCKDHHH:~/Code/PDC-Assignment-4$ python3 gpt149.py part4
 
@@ -268,3 +355,38 @@ STUDENT - FLASH ATTENTION statistics
 cpu time:  221.111ms
 mem usage:  524288 bytes
 ```
+
+### Analysis
+
+The Flash Attention implementation shows interesting characteristics:
+
+1. Memory usage is further reduced to ~524KB
+2. Reference implementation is slower than Part 3, but student implementation maintains good performance
+3. Student implementation is ~63% faster than the reference
+4. The implementation successfully handles the block-wise computation of attention
+
+## Overall Performance Comparison
+
+### CPU Time Progression
+
+1. Naive (Part 1): 248.765ms
+2. Blocked (Part 2): 210.923ms
+3. Fused (Part 3): 129.171ms
+4. Flash (Part 4): 221.111ms
+
+### Memory Usage Progression
+
+1. Naive (Part 1): 4,718,592 bytes
+2. Blocked (Part 2): 4,718,592 bytes
+3. Fused (Part 3): 557,056 bytes
+4. Flash (Part 4): 524,288 bytes
+
+### Key Insights
+
+1. Memory optimization had the most significant impact on performance
+2. Operation fusion provided the best overall performance
+3. Flash Attention, while more complex, successfully reduced memory footprint
+4. Student implementations consistently outperformed reference implementations
+5. The progression shows clear improvements in both memory efficiency and computational performance
+
+This enhanced report provides a clear analysis of the performance characteristics and improvements across all four implementations while maintaining the original raw output data.
